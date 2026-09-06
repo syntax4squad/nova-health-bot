@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — SwasthyaSaathi AI</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><span class="dot"></span> SwasthyaSaathi AI — Admin</div>
+  <div class="topbar-actions">
+    <a class="btn btn-outline" href="{{ url_for('index') }}">Back to app</a>
+    <button class="btn btn-danger" id="logoutBtn">Log out</button>
+  </div>
+</div>
+
+<div class="main" style="max-width:1000px; margin:0 auto; padding:24px;">
+  <h2>Public Health Awareness Dashboard</h2>
+  <p style="color:var(--muted)">Anonymized, aggregated interaction signals only — never claim these queries prove an outbreak.</p>
+
+  <div class="stat-grid" id="statGrid"></div>
+
+  <div class="card">
+    <h3>AI model status</h3>
+    <p id="aiStatus">Checking...</p>
+  </div>
+
+  <div class="card">
+    <h3>Fact-checker search provider</h3>
+    <p id="searchProviderStatus">Checking...</p>
+  </div>
+
+  <div class="card">
+    <h3>Queries by category</h3>
+    <table class="admin-table" id="tblCategory"></table>
+  </div>
+
+  <div class="card">
+    <h3>Queries by language</h3>
+    <table class="admin-table" id="tblLanguage"></table>
+  </div>
+
+  <div class="card">
+    <h3>Risk-level distribution</h3>
+    <table class="admin-table" id="tblRisk"></table>
+  </div>
+
+  <div class="card">
+    <h3>Disease-topic interest</h3>
+    <table class="admin-table" id="tblDisease"></table>
+  </div>
+
+  <div class="card">
+    <h3>Guest vs registered usage</h3>
+    <table class="admin-table" id="tblGuest"></table>
+  </div>
+</div>
+
+<script>
+function renderTable(el, obj, cols) {
+  const rows = Object.entries(obj || {});
+  if (!rows.length) { el.innerHTML = '<tr><td>No data yet.</td></tr>'; return; }
+  let html = `<tr><th>${cols[0]}</th><th>${cols[1]}</th></tr>`;
+  rows.sort((a,b) => b[1]-a[1]).forEach(([k,v]) => { html += `<tr><td>${k ?? '—'}</td><td>${v}</td></tr>`; });
+  el.innerHTML = html;
+}
+
+async function load() {
+  const res = await fetch('/api/admin/analytics');
+  if (res.status === 401 || res.redirected) { window.location.href = '/admin'; return; }
+  const data = await res.json();
+
+  const statGrid = document.getElementById('statGrid');
+  statGrid.innerHTML = Object.entries(data.totals).map(([k,v]) =>
+    `<div class="stat-card"><div class="num">${v}</div><div class="label">${k}</div></div>`
+  ).join('');
+
+  document.getElementById('aiStatus').textContent = data.ai_configured
+    ? '✅ Groq API key detected — AI responses are live.'
+    : '⚠️ No GROQ_API_KEY set in .env — chatbot is running in knowledge-base-only fallback mode.';
+
+  const providerLabels = {
+    serper: '✅ Using Serper (serper.dev) for live web search.',
+    serpapi: '✅ Using SerpApi (serpapi.com) for live web search.',
+    google_cse: '✅ Using Google Programmable Search for live web search.',
+    duckduckgo: '⚠️ Using DuckDuckGo Instant Answer as a zero-config fallback — add SERPER_API_KEY or SERPAPI_API_KEY in .env for meaningfully better coverage.',
+  };
+  document.getElementById('searchProviderStatus').textContent = data.fact_check_search_provider
+    ? (providerLabels[data.fact_check_search_provider] || `Using "${data.fact_check_search_provider}" for live web search.`)
+    : '⚠️ Live web search is disabled (SEARCH_PROVIDER=none) — the fact-checker only uses the local knowledge base.';
+
+  renderTable(document.getElementById('tblCategory'), data.by_category, ['Category', 'Count']);
+  renderTable(document.getElementById('tblLanguage'), data.by_language, ['Language', 'Count']);
+  renderTable(document.getElementById('tblRisk'), data.by_risk_level, ['Risk level', 'Count']);
+  renderTable(document.getElementById('tblDisease'), data.by_disease_topic, ['Disease', 'Count']);
+  renderTable(document.getElementById('tblGuest'), data.guest_vs_registered, ['User type', 'Count']);
+}
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await fetch('/api/admin/logout', {method:'POST'});
+  window.location.href = '/admin';
+});
+
+load();
+</script>
+</body>
+</html>

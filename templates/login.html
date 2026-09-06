@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log in — SwasthyaSaathi AI</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><span class="dot"></span> SwasthyaSaathi AI</div>
+  <div class="topbar-actions"><a class="btn btn-outline" href="{{ url_for('index') }}">Continue as guest</a></div>
+</div>
+
+<div class="auth-wrap">
+  <h2>Welcome back</h2>
+  <p style="color:var(--muted); font-size:0.9rem;">Log in to access your saved chat history.</p>
+  <label for="identifier">Email or phone number</label>
+  <input type="text" id="identifier" placeholder="you@example.com">
+  <label for="password">Password</label>
+  <input type="password" id="password" placeholder="••••••••">
+  <div class="auth-error" id="err"></div>
+  <button class="btn btn-primary" id="loginBtn">Log in</button>
+  <div class="auth-switch">Don't have an account? <a href="{{ url_for('register_page') }}">Register</a></div>
+</div>
+
+<script>
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const identifier = document.getElementById('identifier').value.trim();
+  const password = document.getElementById('password').value;
+  const err = document.getElementById('err');
+  err.textContent = '';
+  const res = await fetch('/api/auth/login', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({identifier, password})
+  });
+  const data = await res.json();
+  if (res.ok) { window.location.href = '/'; }
+  else { err.textContent = data.error || 'Login failed.'; }
+});
+document.getElementById('password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('loginBtn').click();
+});
+</script>
+</body>
+</html>
