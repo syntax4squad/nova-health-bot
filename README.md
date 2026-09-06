@@ -1,4 +1,4 @@
-# SwasthyaSaathi AI
+# Nova Health Bot
 
 A working prototype for **SIH25049 — AI-Driven Public Health Chatbot for Disease
 Awareness** (Government of Odisha). Built as a real Flask server (not a static
@@ -61,7 +61,7 @@ healthdesk/
 ## Setup
 
 ```bash
-cd swasthyasaathi
+cd nova-health-bot
 python3 -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt

@@ -507,10 +507,10 @@ def check_local_fast_path(claim: str):
     disease_key, myth, fact, score = hit
     return {
         "source_id": "E0",
-        "title": f"SwasthyaSaathi verified knowledge base",
+        "title": f"NOVA verified knowledge base",
         "url": None,
         "domain": "local-kb",
-        "source_name": "SwasthyaSaathi verified knowledge base",
+        "source_name": "NOVA verified knowledge base",
         "source_tier": 1,
         "published_date": None,
         "updated_date": None,
@@ -913,7 +913,7 @@ def analyze_claim(claim: str, language: str = "English") -> dict:
                 "claim": claim,
                 "short_answer": local_evidence["snippet"],
                 "explanation": (
-                    "This matches a known myth in SwasthyaSaathi's local verified "
+                    "This matches a known myth in Nova's local verified "
                     "knowledge base. Live web verification is disabled on this "
                     "server (SEARCH_PROVIDER=none), so this result is based on the "
                     "local knowledge base only."

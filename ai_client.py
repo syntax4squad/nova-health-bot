@@ -1,4 +1,4 @@
-"""Groq client and health/non-health classification for SwasthyaSaathi."""
+"""Groq client and health/non-health classification for Nova."""
 
 import re
 
@@ -7,7 +7,7 @@ from config import Config
 
 _client = Groq(api_key=Config.GROQ_API_KEY) if Config.GROQ_API_KEY else None
 
-SYSTEM_PROMPT = """You are SwasthyaSaathi, a public health awareness assistant.
+SYSTEM_PROMPT = """You are Nova, a public health awareness assistant.
 Provide useful, clear, evidence-informed general health information. You are not
 a substitute for a qualified healthcare professional.
 

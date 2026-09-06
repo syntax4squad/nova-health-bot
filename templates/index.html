@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SwasthyaSaathi AI — Public Health Assistant</title>
+<title>Nova AI — Public Health Assistant</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
 <div class="topbar">
-  <div class="brand"><span class="dot"></span> SwasthyaSaathi AI</div>
+  <div class="brand"><span class="dot"></span> Nova AI</div>
   <div class="topbar-actions">
     <select id="languageSelect">
       {% for lang in languages %}
@@ -56,9 +56,8 @@
     <div id="viewChat">
       <div class="chat-window" id="chatWindow">
         <div class="msg assistant">
-          Hi, I'm SwasthyaSaathi — a public-health awareness assistant. Ask me about
-          disease symptoms, prevention, or transmission, and I'll answer using a verified
-          knowledge base. I can't diagnose you, and for emergencies please contact a
+          Hi, I'm Nova — a public-health awareness assistant. Ask me about
+          disease symptoms, prevention, or transmission. I can't diagnose you, and for emergencies please contact a
           medical professional directly.
         </div>
       </div>
